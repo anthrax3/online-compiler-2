@@ -32,11 +32,12 @@
                 e.preventDefault();
                 console.log("submitCodeFormID clicked");
                 var tmp1 = $("#textbox1").val();
-
+                tmp1 = btoa(tmp1);
+                
                 $.ajax({
                     url: "Default.aspx/CompileStr",
                     type: "POST",
-                    data: "{ 'CodeBox': '" + "script" + "' }",
+                    data: "{ 'CodeBox': '" + tmp1 + "' }",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {

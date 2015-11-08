@@ -15,7 +15,10 @@ namespace OnlineCompiler
 		[System.Web.Services.WebMethod]
 		public static string CompileStr(string CodeBox)
 		{
-			return "compiler result";
+			byte[] data = Convert.FromBase64String(CodeBox);
+			string decodedString = Encoding.UTF8.GetString(data);
+
+			return "compiler result: " + decodedString;
 		}
 
 	}
