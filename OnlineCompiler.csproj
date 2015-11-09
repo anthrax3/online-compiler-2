@@ -35,6 +35,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="Mono.CSharp">
+      <HintPath>Lib\Mono.CSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -64,8 +67,10 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="Scripts\" />
+    <Folder Include="Lib\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\jquery-2.1.4.min.map" />
+    <None Include="Lib\Mono.CSharp.dll" />
   </ItemGroup>
 </Project>
