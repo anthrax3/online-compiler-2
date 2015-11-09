@@ -5,9 +5,6 @@ using System.Text;
 
 namespace OnlineCompiler
 {
-	using System;
-	using System.Web;
-	using System.Web.UI;
 
 	public partial class Default : System.Web.UI.Page
 	{
@@ -18,7 +15,10 @@ namespace OnlineCompiler
 			byte[] data = Convert.FromBase64String(CodeBox);
 			string decodedString = Encoding.UTF8.GetString(data);
 
-			return "compiler result: " + decodedString;
+			MonoCompiler monoCompiler = new MonoCompiler();
+
+			string resultInJSON = monoCompiler.compileCode(decodedString);
+			return resultInJSON;
 		}
 
 	}
