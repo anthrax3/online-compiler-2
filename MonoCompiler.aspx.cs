@@ -22,6 +22,10 @@ namespace OnlineCompiler
 			}
 		}
 
+		
+		static TextWriter originalConsoleOut;
+		static CompilerOutput compilerOutput_global;
+
 		public static string toJSON(object tmp){
 			var jsSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 			return jsSerializer.Serialize(tmp);
@@ -33,11 +37,26 @@ namespace OnlineCompiler
 		}
 
 		public string compileCode(string code){
-			/*
-			Object result = new Object (); //TODO
+			CompilerOutput result = run(code);
 			string jsontmp = toJSON (result);
 			return jsontmp;
-			*/
+		}
+		
+		// input: code to compoile, return: json
+		public CompilerOutput run(string code){
+			try{
+				compilerOutput_global = evaluateCode (code);
+			}catch(Exception ex){
+				//System.Console.WriteLine("catched: " + ex.ToString());
+
+			}
+
+			return compilerOutput_global;
+		}
+
+
+		public static CompilerOutput evaluateCode (string code)
+		{
 
 			CompilerOutput compilerOutput = new CompilerOutput ();
 			/*
@@ -52,9 +71,72 @@ namespace OnlineCompiler
 			var compilerContext = new CompilerContext (settings, printer);
 			var reports = new Report(compilerContext, printer);
 			var evaluator = new Evaluator(compilerContext);
+
+
+
+			string mainCode = code;
+
+
+			//bool ress;
+			//object res;
+			//evaluator.Run ("using System; using System.Linq;");
+
+
+			var myString = "";
+			originalConsoleOut = Console.Out; // preserve the original stream
+			using(var writer = new StringWriter())
+			{
+				Console.SetOut(writer);
+
+				//Console.WriteLine("some stuff"); // or make your DLL calls :)
+				evaluator.Run (mainCode);
+				evaluator.Run ("MainClass m1 = new MainClass(); m1.Main();");
+
+				//bConsole.WriteLine ("after executing code");
+
+				if (reports.Errors > 0) {
+					Console.WriteLine ("reportWriter.ToString: \n" + reportWriter.ToString ());
+					compilerOutput.errors = reportWriter.ToString ();
+				}
+
+				writer.Flush(); // make sure everything is written out of consule
+
+				myString = writer.GetStringBuilder().ToString();
+
+				compilerOutput.consoleOut = myString;
+
+			}
+
+			Console.SetOut(originalConsoleOut); // restore Console.Out
+
+			//CompiledMethod t1 = evaluator.Compile (mainCode);
+			//string s = evaluator.Evaluate (mainCode, out res, out ress);
+			//s += evaluator.Evaluate ("MainClass m1 = new MainClass(); m1.Main();", out res, out ress);
+
+			//Console.WriteLine ("result: " + s);
+
+			/*
+		foreach (var v in (IEnumerable) res){
+			Console.Write (v);
+			Console.Write (' ');
+		}
+		*/
 			//evaluator.Run ("MainClass m1 = new MainClass(); m1.Main();");
 			//evaluator.Compile (mainCode);
+
+
+			/*
+		Console.WriteLine ("aaaa");
+		Console.WriteLine (">> " + myString);
+		Console.WriteLine ("compilerOutput.errors: " + compilerOutput.errors);
+		Console.WriteLine ("compilerOutput.consoleOut: " + compilerOutput.consoleOut);
+		*/
+
+
+			return compilerOutput;
 		}
+
 	}
+
 }
 
