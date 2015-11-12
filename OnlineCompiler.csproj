@@ -46,6 +46,14 @@
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4-vsdoc.js" />
+    <Content Include="bootstrap\css\bootstrap-theme.css" />
+    <Content Include="bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="bootstrap\css\bootstrap.css" />
+    <Content Include="bootstrap\css\bootstrap.min.css" />
+    <Content Include="bootstrap\js\bootstrap.js" />
+    <Content Include="bootstrap\js\bootstrap.min.js" />
+    <Content Include="bootstrap\js\npm.js" />
+    <Content Include="style.css" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.asax.cs">
@@ -68,9 +76,17 @@
   <ItemGroup>
     <Folder Include="Scripts\" />
     <Folder Include="Lib\" />
+    <Folder Include="bootstrap\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Lib\Mono.CSharp.dll" />
+    <None Include="bootstrap\css\bootstrap-theme.css.map" />
+    <None Include="bootstrap\css\bootstrap.css.map" />
+    <None Include="bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="bootstrap\fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
 </Project>

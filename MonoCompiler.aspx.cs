@@ -41,8 +41,6 @@ namespace OnlineCompiler
 
 		// Constructor
 		public MonoCompiler (){
-			originalConsoleOut_global = null;
-			compilerOutput_global = null;
 			timeout_global = 1000; // In milliseconds
 		}
 
