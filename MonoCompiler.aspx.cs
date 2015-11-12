@@ -8,9 +8,15 @@ using System.Threading;
 
 namespace OnlineCompiler
 {
+	/*
+	 * This class contains the core functionalities for evaluating and executing CSharp code from client
+	 */
 	public class MonoCompiler
 	{
 
+		/*
+		 * This class contains structure to store compiler results
+		 */
 		public class CompilerOutput{
 			public string consoleOut { get; set; }
 			public string errors { get; set; }
@@ -23,41 +29,46 @@ namespace OnlineCompiler
 			}
 		}
 
-
-		static TextWriter originalConsoleOut;
+		static TextWriter originalConsoleOut_global;
 		static CompilerOutput compilerOutput_global;
+		static int timeout_global;
 
+		// This function converts the given object to a string in JSON format
 		public static string toJSON(object tmp){
 			var jsSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
 			return jsSerializer.Serialize(tmp);
 		}
 
-		public MonoCompiler ()
-		{
-
+		// Constructor
+		public MonoCompiler (){
+			originalConsoleOut_global = null;
+			compilerOutput_global = null;
+			timeout_global = 1000; // In milliseconds
 		}
 
+		// This method accepts a string which contains CSharp code then calls another functions to evaluate and execute the code
+		// Output of this function is a string in JSON format
 		public string compileCode(string code){
 			CompilerOutput result = run(code);
 			string jsontmp = toJSON (result);
 			return jsontmp;
 		}
 
-		// input: code to compoile, return: json
+		// Input: code to compile, return: CompilerOutput object
 		public CompilerOutput run(string code){
 			string result = "";
-			Thread workerThread = new Thread(() => LongRunningOperation(code));
+			Thread workerThread = new Thread(() => threadedFunction(code));
 			workerThread.Start();
 
-			bool finished = workerThread.Join(TimeSpan.FromMilliseconds(1000));
+			bool finished = workerThread.Join(TimeSpan.FromMilliseconds(timeout_global));
 			if (finished) {
 				Console.WriteLine("Worker thread finished.");
 				return compilerOutput_global;
 
 			} else {
 				workerThread.Abort ();
-				if (originalConsoleOut != null) {
-					Console.SetOut (originalConsoleOut);
+				if (originalConsoleOut_global != null) {
+					Console.SetOut (originalConsoleOut_global);
 					compilerOutput_global.criticalErrors = "RESTORED CONSOLE.\n";
 				}
 				compilerOutput_global.criticalErrors += "Worker thread was aborted.\n";
@@ -68,19 +79,21 @@ namespace OnlineCompiler
 			return compilerOutput_global;
 		}
 
-
-		static void LongRunningOperation(string code)
+		// This method runs within a thread to compile code
+		static void threadedFunction(string code)
 		{
 			//Thread.Sleep(1000);
 
 			try{
 				compilerOutput_global = evaluateCode (code);
 			}catch(Exception ex){
-				//System.Console.WriteLine("catched: " + ex.ToString());
+				//System.Console.WriteLine("Caught: " + ex.ToString());
 
 			}
 		}
 
+
+		// This method evaluates the given code and returns a CompilerOutput object
 		public static CompilerOutput evaluateCode (string code)
 		{
 
@@ -98,24 +111,13 @@ namespace OnlineCompiler
 			var reports = new Report(compilerContext, printer);
 			var evaluator = new Evaluator(compilerContext);
 
-
-
-			string mainCode = code;
-
-
-			//bool ress;
-			//object res;
-			//evaluator.Run ("using System; using System.Linq;");
-
-
 			var myString = "";
-			originalConsoleOut = Console.Out; // preserve the original stream
+			originalConsoleOut_global = Console.Out; // preserve the original stream
 			using(var writer = new StringWriter())
 			{
 				Console.SetOut(writer);
 
-				//Console.WriteLine("some stuff"); // or make your DLL calls :)
-				evaluator.Run (mainCode);
+				evaluator.Run (code);
 				evaluator.Run ("MainClass m1 = new MainClass(); m1.Main();");
 
 				//bConsole.WriteLine ("after executing code");
@@ -133,31 +135,7 @@ namespace OnlineCompiler
 
 			}
 
-			Console.SetOut(originalConsoleOut); // restore Console.Out
-
-			//CompiledMethod t1 = evaluator.Compile (mainCode);
-			//string s = evaluator.Evaluate (mainCode, out res, out ress);
-			//s += evaluator.Evaluate ("MainClass m1 = new MainClass(); m1.Main();", out res, out ress);
-
-			//Console.WriteLine ("result: " + s);
-
-			/*
-		foreach (var v in (IEnumerable) res){
-			Console.Write (v);
-			Console.Write (' ');
-		}
-		*/
-			//evaluator.Run ("MainClass m1 = new MainClass(); m1.Main();");
-			//evaluator.Compile (mainCode);
-
-
-			/*
-		Console.WriteLine ("aaaa");
-		Console.WriteLine (">> " + myString);
-		Console.WriteLine ("compilerOutput.errors: " + compilerOutput.errors);
-		Console.WriteLine ("compilerOutput.consoleOut: " + compilerOutput.consoleOut);
-		*/
-
+			Console.SetOut(originalConsoleOut_global); // restore Console.Out
 
 			return compilerOutput;
 		}

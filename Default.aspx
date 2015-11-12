@@ -35,7 +35,7 @@
                 tmp1 = btoa(tmp1);
                 
                 $.ajax({
-                    url: "Default.aspx/CompileStr",
+                    url: "Default.aspx/RunCode",
                     type: "POST",
                     data: "{ 'CodeBox': '" + tmp1 + "' }",
                     dataType: "json",
