@@ -4,6 +4,7 @@ using System.Web;
 using System.IO;
 using System.Collections;
 using Mono.CSharp;
+using System.Threading;
 
 namespace OnlineCompiler
 {
@@ -22,7 +23,7 @@ namespace OnlineCompiler
 			}
 		}
 
-		
+
 		static TextWriter originalConsoleOut;
 		static CompilerOutput compilerOutput_global;
 
@@ -41,19 +42,44 @@ namespace OnlineCompiler
 			string jsontmp = toJSON (result);
 			return jsontmp;
 		}
-		
+
 		// input: code to compoile, return: json
 		public CompilerOutput run(string code){
+			string result = "";
+			Thread workerThread = new Thread(() => LongRunningOperation(code));
+			workerThread.Start();
+
+			bool finished = workerThread.Join(TimeSpan.FromMilliseconds(1000));
+			if (finished) {
+				Console.WriteLine("Worker thread finished.");
+				return compilerOutput_global;
+
+			} else {
+				workerThread.Abort ();
+				if (originalConsoleOut != null) {
+					Console.SetOut (originalConsoleOut);
+					compilerOutput_global.criticalErrors = "RESTORED CONSOLE.\n";
+				}
+				compilerOutput_global.criticalErrors += "Worker thread was aborted.\n";
+
+				return compilerOutput_global;
+			}
+
+			return compilerOutput_global;
+		}
+
+
+		static void LongRunningOperation(string code)
+		{
+			//Thread.Sleep(1000);
+
 			try{
 				compilerOutput_global = evaluateCode (code);
 			}catch(Exception ex){
 				//System.Console.WriteLine("catched: " + ex.ToString());
 
 			}
-
-			return compilerOutput_global;
 		}
-
 
 		public static CompilerOutput evaluateCode (string code)
 		{
