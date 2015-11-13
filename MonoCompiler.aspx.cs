@@ -41,7 +41,7 @@ namespace OnlineCompiler
 
 		// Constructor
 		public MonoCompiler (){
-			timeout_global = 1000; // In milliseconds
+			timeout_global = 5000; // In milliseconds
 		}
 
 		// This method accepts a string which contains CSharp code then calls another functions to evaluate and execute the code
