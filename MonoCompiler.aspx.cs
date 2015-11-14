@@ -1,3 +1,9 @@
+/*
+ * This class contains the core functionalities for evaluating and executing CSharp code from client
+ * Author: Sohrab Ameli
+ * Date: 14 Nov 2015
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -8,9 +14,7 @@ using System.Threading;
 
 namespace OnlineCompiler
 {
-	/*
-	 * This class contains the core functionalities for evaluating and executing CSharp code from client
-	 */
+
 	public class MonoCompiler
 	{
 

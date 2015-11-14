@@ -1,3 +1,9 @@
+/*
+ * This class is the controller for Main View (Default.aspx)
+ * Author: Sohrab Ameli
+ * Date: 14 Nov 2015
+ */
+
 using System;
 using System.Web;
 using System.Web.UI;
@@ -5,9 +11,6 @@ using System.Text;
 
 namespace OnlineCompiler
 {
-	/*
-	 * This class is the controller for Main View (Default.aspx)
-	 */
 	public partial class Default : System.Web.UI.Page
 	{
 

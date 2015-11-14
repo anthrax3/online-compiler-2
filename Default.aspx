@@ -6,7 +6,7 @@
     <link href="style.css" rel="stylesheet">
 	<script src="./Scripts/jquery-2.1.4.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
-	<title>Default</title>
+	<title>Online C# Compiler</title>
 </head>
 <body>
     <div class="main">
