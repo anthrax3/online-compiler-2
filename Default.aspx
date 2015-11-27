@@ -122,7 +122,7 @@
         
        			 <br>
                 <div id="footer" class="text-center">
-                <a href="http://github.com/sameli">Source Code</a>
+                <a href="https://github.com/sameli/online-compiler">Source Code</a>
                 <br>
                     &copy; Sohrab Ameli 2015
                 </div>
