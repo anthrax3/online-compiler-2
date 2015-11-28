@@ -36,6 +36,7 @@ namespace OnlineCompiler
 		static TextWriter originalConsoleOut_global;
 		static CompilerOutput compilerOutput_global;
 		static int timeout_global;
+		static int code_input_limit_global;
 
 		// This function converts the given object to a string in JSON format
 		public static string toJSON(object tmp){
@@ -46,6 +47,7 @@ namespace OnlineCompiler
 		// Constructor
 		public MonoCompiler (){
 			timeout_global = 5000; // In milliseconds
+			code_input_limit_global = 100000; // In characters
 		}
 
 		private Boolean isDangerousCode(string code){
@@ -81,7 +83,9 @@ namespace OnlineCompiler
 			CompilerOutput result = new CompilerOutput();
 			if (isDangerousCode (code)) {
 				result.errors = "Possible dangerous code";
-			} else {
+			} else if (code.Length >= code_input_limit_global) {
+				result.errors = "Due to server limits, we have restricted code size to " + code_input_limit_global + " characters.";
+			}else {
 				result = run (code);
 			}
 
