@@ -48,10 +48,33 @@ namespace OnlineCompiler
 			timeout_global = 5000; // In milliseconds
 		}
 
+		private Boolean isDangerousCode(string code){
+		List<string> prohibitedList = new List<string> () {
+			"System.IO", "IO.File", "IO.Directory",
+				"System.Runtime", "Runtime.CompilerServices", "System.Reflection",
+				"Microsoft.CSharp", "CSharpCodeProvider", "System.CodeDom.Compiler", "CodeDom.Compiler",
+				"System.Management", "Microsoft.Win32", "System.Security", "System.Security.Permissions"
+			};
+
+			foreach(string tmp in prohibitedList){
+				//if(code.Contains(tmp)){
+				if(code.IndexOf(tmp, StringComparison.OrdinalIgnoreCase) >= 0){
+					return true;
+				}
+			}
+			return false;
+		}
+
 		// This method accepts a string which contains CSharp code then calls another functions to evaluate and execute the code
 		// Output of this function is a string in JSON format
 		public string compileCode(string code){
-			CompilerOutput result = run(code);
+			CompilerOutput result = new CompilerOutput();
+			if (isDangerousCode (code)) {
+				result.errors = "Possible dangerous code";
+			} else {
+				result = run (code);
+			}
+
 			string jsontmp = toJSON (result);
 			return jsontmp;
 		}
