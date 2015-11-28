@@ -49,19 +49,29 @@ namespace OnlineCompiler
 		}
 
 		private Boolean isDangerousCode(string code){
-		List<string> prohibitedList = new List<string> () {
-			"System.IO", "IO.File", "IO.Directory",
+			List<string> prohibitedListCaseInsensitive = new List<string> () {
+				"System.IO", "IO.File", "IO.Directory",
 				"System.Runtime", "Runtime.CompilerServices", "System.Reflection",
 				"Microsoft.CSharp", "CSharpCodeProvider", "System.CodeDom.Compiler", "CodeDom.Compiler",
 				"System.Management", "Microsoft.Win32", "System.Security", "System.Security.Permissions"
 			};
 
-			foreach(string tmp in prohibitedList){
-				//if(code.Contains(tmp)){
+			foreach(string tmp in prohibitedListCaseInsensitive){
 				if(code.IndexOf(tmp, StringComparison.OrdinalIgnoreCase) >= 0){
 					return true;
 				}
 			}
+
+			List<string> prohibitedListCaseSensitive = new List<string> () {
+				"IO.", "CompilerServices."
+			};
+
+			foreach (string tmp2 in prohibitedListCaseSensitive) {
+				if (code.Contains (tmp2)) {
+					return true;
+				}
+			}
+
 			return false;
 		}
 
